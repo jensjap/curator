@@ -1,0 +1,50 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+CommandlineError	lib/trollop.rb	/^class CommandlineError < StandardError; end$/;"	c	class:Trollop
+Crawler	lib/crawler.rb	/^class Crawler$/;"	c
+HelpNeeded	lib/trollop.rb	/^class HelpNeeded < StandardError; end$/;"	c	class:Trollop
+Parser	lib/trollop.rb	/^class Parser$/;"	c	class:Trollop
+TestCurator	test_main.rb	/^class TestCurator < Test::Unit::TestCase$/;"	c
+Trollop	lib/trollop.rb	/^module Trollop$/;"	m
+VersionNeeded	lib/trollop.rb	/^class VersionNeeded < StandardError; end$/;"	c	class:Trollop
+banner	lib/trollop.rb	/^  def banner s; @order << [:text, s] end$/;"	f
+cloaker	lib/trollop.rb	/^  def cloaker &b$/;"	f
+collect_argument_parameters	lib/trollop.rb	/^  def collect_argument_parameters args, start_at$/;"	f
+conflicts	lib/trollop.rb	/^  def conflicts *syms$/;"	f
+crawl_extraction_form_arms_table	lib/crawler.rb	/^  def crawl_extraction_form_arms_table$/;"	f
+crawl_extraction_form_outcome_names	lib/crawler.rb	/^  def crawl_extraction_form_outcome_names$/;"	f
+crawl_type_details_table	lib/crawler.rb	/^  def crawl_type_details_table$/;"	f	class:Crawler
+critical	main.rb	/^def critical(err)$/;"	f
+depends	lib/trollop.rb	/^  def depends *syms$/;"	f
+die	lib/trollop.rb	/^  def die arg, msg$/;"	f
+die	lib/trollop.rb	/^def die arg, msg=nil$/;"	f
+each_arg	lib/trollop.rb	/^  def each_arg args$/;"	f
+educate	lib/trollop.rb	/^  def educate stream=$stdout$/;"	f
+get_extraction_forms	main.rb	/^def get_extraction_forms(project_id)$/;"	f
+get_project_info	main.rb	/^def get_project_info(project_id)$/;"	f
+initialize	lib/crawler.rb	/^  def initialize(project_id, extraction_form_id)$/;"	f	class:Crawler
+initialize	lib/trollop.rb	/^  def initialize *a, &b$/;"	f	class:Trollop.Parser
+load_rails_environment	lib/environment.rb	/^def load_rails_environment$/;"	f
+method_missing	lib/trollop.rb	/^      def method_missing(m, *args)$/;"	f
+opt	lib/trollop.rb	/^  def opt name, desc="", opts={}$/;"	f	class:Trollop.Parser
+options	lib/trollop.rb	/^def options args=ARGV, *a, &b$/;"	f
+parse	lib/trollop.rb	/^  def parse cmdline=ARGV$/;"	f
+parse_date_parameter	lib/trollop.rb	/^  def parse_date_parameter param, arg #:nodoc:$/;"	f
+parse_float_parameter	lib/trollop.rb	/^  def parse_float_parameter param, arg$/;"	f
+parse_integer_parameter	lib/trollop.rb	/^  def parse_integer_parameter param, arg$/;"	f
+parse_io_parameter	lib/trollop.rb	/^  def parse_io_parameter param, arg$/;"	f
+resolve_default_short_options!	lib/trollop.rb	/^  def resolve_default_short_options!$/;"	f	class:collect_argument_parameters
+stop_on	lib/trollop.rb	/^  def stop_on *words$/;"	f
+stop_on_unknown	lib/trollop.rb	/^  def stop_on_unknown$/;"	f
+test_get_extraction_forms	test_main.rb	/^  def test_get_extraction_forms  # {{{3$/;"	f	class:TestCurator
+test_get_project_info	test_main.rb	/^  def test_get_project_info  # {{{3$/;"	f	class:TestCurator
+validate_arg_list	main.rb	/^def validate_arg_list(opts)$/;"	f
+version	lib/trollop.rb	/^  def version s=nil; @version = s if s; @version end$/;"	f
+width	lib/trollop.rb	/^  def width #:nodoc:$/;"	f
+with_standard_exception_handling	lib/trollop.rb	/^def with_standard_exception_handling parser$/;"	f
+wrap	lib/trollop.rb	/^  def wrap str, opts={} # :nodoc:$/;"	f
+wrap_line	lib/trollop.rb	/^  def wrap_line str, opts={}$/;"	f	class:collect_argument_parameters
