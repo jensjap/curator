@@ -109,5 +109,6 @@ if __FILE__ == $0  # {{{1
 
   f = Waiter.new(project_info, ef_list)
   #f.print
-  f.to_html5
+  f.profile_to_html5
+  #f.datapoints_to_csv
 end

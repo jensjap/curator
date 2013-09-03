@@ -11,23 +11,36 @@ Parser	lib/trollop.rb	/^class Parser$/;"	c	class:Trollop
 TestCurator	test_main.rb	/^class TestCurator < Test::Unit::TestCase$/;"	c
 Trollop	lib/trollop.rb	/^module Trollop$/;"	m
 VersionNeeded	lib/trollop.rb	/^class VersionNeeded < StandardError; end$/;"	c	class:Trollop
+Waiter	lib/waiter.rb	/^class Waiter$/;"	c
+_build_matrix_answer_choices	lib/crawler.rb	/^  def _build_matrix_answer_choices(matrix_rows, matrix_cols)  #{{{1$/;"	f
+_convert_ar_obj_to_hash	lib/crawler.rb	/^  def _convert_ar_obj_to_hash(active_record_obj)$/;"	f	class:Crawler
+_crawl_section	lib/crawler.rb	/^  def _crawl_section(section_detail)  #{{{1$/;"	f	class:Crawler
+_find_answer_choices	lib/crawler.rb	/^  def _find_answer_choices(temp)  #{{{1$/;"	f
+_find_section_data_point_entries	lib/crawler.rb	/^  def _find_section_data_point_entries(section, section_detail)  #{{{1$/;"	f	class:Crawler
+_find_section_field_entries	lib/crawler.rb	/^  def _find_section_field_entries(section, section_detail)  #{{{1$/;"	f	class:Crawler
+_parse_quality_dimension_field_question	lib/crawler.rb	/^  def _parse_quality_dimension_field_question(str)  #{{{1$/;"	f
+_split_matrix_into_rows_and_columns	lib/crawler.rb	/^  def _split_matrix_into_rows_and_columns(section_fields)  #{{{1$/;"	f
 banner	lib/trollop.rb	/^  def banner s; @order << [:text, s] end$/;"	f
 cloaker	lib/trollop.rb	/^  def cloaker &b$/;"	f
 collect_argument_parameters	lib/trollop.rb	/^  def collect_argument_parameters args, start_at$/;"	f
 conflicts	lib/trollop.rb	/^  def conflicts *syms$/;"	f
-crawl_extraction_form_arms_table	lib/crawler.rb	/^  def crawl_extraction_form_arms_table$/;"	f
-crawl_extraction_form_outcome_names	lib/crawler.rb	/^  def crawl_extraction_form_outcome_names$/;"	f
-crawl_type_details_table	lib/crawler.rb	/^  def crawl_type_details_table$/;"	f	class:Crawler
+crawl_extraction_form_arms_table	lib/crawler.rb	/^  def crawl_extraction_form_arms_table  #{{{1$/;"	f
+crawl_extraction_form_outcome_names	lib/crawler.rb	/^  def crawl_extraction_form_outcome_names  #{{{1$/;"	f
+crawl_section_details_table	lib/crawler.rb	/^  def crawl_section_details_table  #{{{1$/;"	f	class:Crawler
 critical	main.rb	/^def critical(err)$/;"	f
+datapoints_to_csv	lib/waiter.rb	/^  def datapoints_to_csv  #{{{2$/;"	f	class:Waiter
 depends	lib/trollop.rb	/^  def depends *syms$/;"	f
 die	lib/trollop.rb	/^  def die arg, msg$/;"	f
 die	lib/trollop.rb	/^def die arg, msg=nil$/;"	f
 each_arg	lib/trollop.rb	/^  def each_arg args$/;"	f
 educate	lib/trollop.rb	/^  def educate stream=$stdout$/;"	f
+extraction_form_id	lib/crawler.rb	/^  def extraction_form_id  #{{{1$/;"	f	class:Crawler
+extraction_form_title	lib/crawler.rb	/^  def extraction_form_title  #{{{1$/;"	f	class:Crawler
 get_extraction_forms	main.rb	/^def get_extraction_forms(project_id)$/;"	f
 get_project_info	main.rb	/^def get_project_info(project_id)$/;"	f
-initialize	lib/crawler.rb	/^  def initialize(project_id, extraction_form_id)$/;"	f	class:Crawler
+initialize	lib/crawler.rb	/^  def initialize(project_id, extraction_form_id)  #{{{1$/;"	f	class:Crawler
 initialize	lib/trollop.rb	/^  def initialize *a, &b$/;"	f	class:Trollop.Parser
+initialize	lib/waiter.rb	/^  def initialize(project_info, ef_list)  #{{{2$/;"	f	class:Waiter
 load_rails_environment	lib/environment.rb	/^def load_rails_environment$/;"	f
 method_missing	lib/trollop.rb	/^      def method_missing(m, *args)$/;"	f
 opt	lib/trollop.rb	/^  def opt name, desc="", opts={}$/;"	f	class:Trollop.Parser
@@ -37,7 +50,10 @@ parse_date_parameter	lib/trollop.rb	/^  def parse_date_parameter param, arg #:no
 parse_float_parameter	lib/trollop.rb	/^  def parse_float_parameter param, arg$/;"	f
 parse_integer_parameter	lib/trollop.rb	/^  def parse_integer_parameter param, arg$/;"	f
 parse_io_parameter	lib/trollop.rb	/^  def parse_io_parameter param, arg$/;"	f
+print	lib/waiter.rb	/^  def print  #{{{2$/;"	f	class:Waiter
+profile_to_html5	lib/waiter.rb	/^  def profile_to_html5  #{{{2$/;"	f	class:Waiter
 resolve_default_short_options!	lib/trollop.rb	/^  def resolve_default_short_options!$/;"	f	class:collect_argument_parameters
+showRE	lib/crawler.rb	/^  def showRE(a,re)  #{{{1$/;"	f
 stop_on	lib/trollop.rb	/^  def stop_on *words$/;"	f
 stop_on_unknown	lib/trollop.rb	/^  def stop_on_unknown$/;"	f
 test_get_extraction_forms	test_main.rb	/^  def test_get_extraction_forms  # {{{3$/;"	f	class:TestCurator
