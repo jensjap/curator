@@ -29,281 +29,66 @@ class Crawler
     self.crawl_extraction_form_outcome_names
   end
 
-  def _build_section_data_point(field_hash, data_point)  #{{{1
-    new_data_point = Hash.new
-    for key in field_hash.keys
-      new_data_point[key] = field_hash[key] || data_point[key]
+  def extraction_form_title
+    ExtractionForm.find(@ef_id).title
+  end
+
+  def _crawl_section(section_detail)  #{{{1
+    _convert_ar_obj_to_hash(section_detail)
+  end
+
+  def _convert_ar_obj_to_hash(active_record_obj)  #{{{1
+    temp_hash = Hash.new
+    active_record_obj.attributes.each do |att|
+      temp_hash[att[0]] = att[1]
     end
-    return new_data_point
+    return temp_hash
   end
 
-  def _crawl_section_details_table_quality_dimension(section, section_detail_field)  #{{{1
-    temp = {## My own bookkeeping
-            :section        => section,
-            :lookup_text    => "[#{section_detail_field.title}]",
-
-            ## Values from QualityDimensionField
-            :id                 => section_detail_field.id,
-            :question_text      => section_detail_field.title,
-            :field_notes        => section_detail_field.field_notes,
-            :extraction_form_id => section_detail_field.extraction_form_id,
-            :study_id           => section_detail_field.study_id,
-            :created_at         => section_detail_field.created_at,
-            :updated_at         => section_detail_field.updated_at,
-
-            ## Placeholders for QualityDimensionDataPoint entries
-            ## The plan is to iterate through each list element in :quality_dimension_data_point_fields
-            ## and collect the information as 1 unit and push it into :quality_dimension_data_points array
-            :section_data_points       => [],
-            :section_data_point_fields => {:id                               => nil,
-                                           :"#{section.underscore}_field_id" => section_detail_field.id,  ## id of section detail. This field is 
-                                                                                                          ## used in the QualityDimensionDataPoint 
-                                                                                                          ## table but is incorrectly called 
-                                                                                                          ## quality_dimension_field_id instead of
-                                                                                                          ## being called quality_dimension_id
-                                           :value                            => nil,
-                                           :notes                            => nil,
-                                           :study_id                         => nil,
-                                           :field_type                       => nil,
-                                           :extraction_form_id               => @ef_id,
-                                           :created_at                       => nil,
-                                           :updated_at                       => nil,
-            }
-    }
-    return temp
+  def _find_section_field_entries(section, section_detail)  #{{{1
+    section_id = "#{section.underscore}_id"
+    section_detail_fields = "#{section}Field".constantize.find(:all, :conditions => { "#{section_id}" => section_detail.id })
+    return section_detail_fields
   end
 
-  def _crawl_section_details_table_others_text(section, section_detail)  #{{{1
-    temp = {## My own bookkeeping
-            :section        => section,
-            :lookup_text    => "[#{section_detail.question}]",
-
-            ## Values from Section
-            :id                      => section_detail.id,
-            :question_text           => section_detail.question,
-            :extraction_form_id      => section_detail.extraction_form_id,
-            :field_type              => section_detail.field_type,
-# !!! BaselineCharacteristics calls this field_notes                    :field_note              => section_detail.field_note,
-            :question_number         => section_detail.question_number,
-            :study_id                => section_detail.study_id,
-            :created_at              => section_detail.created_at,
-            :updated_at              => section_detail.updated_at,
-            :instruction             => section_detail.instruction,
-            :is_matrix               => section_detail.is_matrix,
-            :include_other_as_option => section_detail.include_other_as_option,
-
-            ## Placeholders for the DataPoint table for each respective section
-            ## The plan is to iterate through each list element in :section_data_point_fields
-            ## and collect the information as 1 unit and push it into :quality_dimension_data_points array
-            :section_data_points => [],
-            :section_data_point_fields => {:id                               => nil,
-                                           :"#{section.underscore}_field_id" => section_detail.id,  ## id of section detail. This field is 
-                                                                                                    ## used in the SectionDataPoint 
-                                                                                                    ## table but is incorrectly called 
-                                                                                                    ## section_field_id instead of being called
-                                                                                                    ## section_id
-                                           :value                            => nil,
-                                           :notes                            => nil,
-                                           :study_id                         => nil,
-                                           :extraction_form_id               => @ef_id,
-                                           :created_at                       => nil,
-                                           :updated_at                       => nil,
-                                           :arm_id                           => nil,
-                                           :subquestion_value                => nil,
-                                           :row_field_id                     => nil,                ## should always be 0 since this is never a matrix question
-                                           :column_field_id                  => nil,                ## should always be 0 since this is never a matrix question
-                                           :outcome_id                       => nil,
-            }
-    }
-    return temp
-  end
-
-  def _crawl_section_details_table_others_matrix(section, section_detail, section_detail_field_row, section_detail_field_column)  #{{{1
-    temp = {## My own bookkeeping
-            :section        => section,
-            :lookup_text    => "[#{section_detail.question}][#{section_detail_field_row.option_text}][#{section_detail_field_column.option_text}]",
-
-            ## Values from Section
-            :id                      => section_detail.id,
-            :question_text           => section_detail.question,
-            :extraction_form_id      => section_detail.extraction_form_id,
-            :field_type              => section_detail.field_type,
-# !!! BaselineCharacteristics calls this field_notes                    :field_note              => section_detail.field_note,
-            :question_number         => section_detail.question_number,
-            :study_id                => section_detail.study_id,
-            :created_at              => section_detail.created_at,
-            :updated_at              => section_detail.updated_at,
-            :instruction             => section_detail.instruction,
-            :is_matrix               => section_detail.is_matrix,
-            :include_other_as_option => section_detail.include_other_as_option,
-
-            ## Placeholders for the DataPoint table for each respective section
-            ## The plan is to iterate through each list element in :section_data_point_fields
-            ## and collect the information as 1 unit and push it into :quality_dimension_data_points array
-            :section_data_points => [],
-            :section_data_point_fields => {:id                               => nil,
-                                           :"#{section.underscore}_field_id" => section_detail.id,  ## id of section detail. This field is 
-                                                                                                    ## used in the SectionDataPoint 
-                                                                                                    ## table but is incorrectly called 
-                                                                                                    ## section_field_id instead of being called
-                                                                                                    ## section_id
-                                           :value                            => nil,
-                                           :notes                            => nil,
-                                           :study_id                         => nil,
-                                           :extraction_form_id               => @ef_id,
-                                           :created_at                       => nil,
-                                           :updated_at                       => nil,
-                                           :arm_id                           => nil,
-                                           :subquestion_value                => nil,
-                                           :row_field_id                     => section_detail_field_row.id,     ## This refers to the id of the section detail field row
-                                           :column_field_id                  => section_detail_field_column.id,  ## This refers to the id of the section detail field column
-                                           :outcome_id                       => nil,
-                                           :option_text_row                  => section_detail_field_row.option_text,
-                                           :option_text_column               => section_detail_field_column.option_text,
-            }
-    }
-    return temp
-  end
-
-  def _crawl_section_details_table_others_non_matrix(section, section_detail, section_detail_field_row)  #{{{1
-    temp = {## My own bookkeeping
-            :section                 => section,
-            :lookup_text             => "[#{section_detail.question}][#{section_detail_field_row.option_text}]",
-
-            ## Values from Section
-            :id                      => section_detail.id,
-            :question_text           => section_detail.question,
-            :extraction_form_id      => section_detail.extraction_form_id,
-            :field_type              => section_detail.field_type,
-# !!! BaselineCharacteristics calls this field_notes                    :field_note              => section_detail.field_note,
-            :question_number         => section_detail.question_number,
-            :study_id                => section_detail.study_id,
-            :created_at              => section_detail.created_at,
-            :updated_at              => section_detail.updated_at,
-            :instruction             => section_detail.instruction,
-            :is_matrix               => section_detail.is_matrix,
-            :include_other_as_option => section_detail.include_other_as_option,
-
-            ## Placeholders for the DataPoint table for each respective section
-            ## The plan is to iterate through each list element in :section_data_point_fields
-            ## and collect the information as 1 unit and push it into :quality_dimension_data_points array
-            :section_data_points => [],
-            :section_data_point_fields => {:id                               => nil,
-                                           :"#{section.underscore}_field_id" => section_detail.id,  ## id of section detail. This field is 
-                                                                                                    ## used in the SectionDataPoint 
-                                                                                                    ## table but is incorrectly called 
-                                                                                                    ## section_field_id instead of being called
-                                                                                                    ## section_id
-                                           :value                            => nil,
-                                           :notes                            => nil,
-                                           :study_id                         => nil,
-                                           :extraction_form_id               => @ef_id,
-                                           :created_at                       => nil,
-                                           :updated_at                       => nil,
-                                           :arm_id                           => nil,
-                                           :subquestion_value                => nil,
-                                           :row_field_id                     => section_detail_field_row.id,  ## This refers to the id of the section detail field row
-                                           :column_field_id                  => 0,
-                                           :outcome_id                       => nil,
-                                           :option_text_row                  => section_detail_field_row.option_text,
-                                           :option_text_column               => nil,
-            }
-    }
-  return temp
+  def _find_section_data_point_entries(section, section_detail)  #{{{1
+    section_id = "#{section.underscore}_field_id"
+    section_data_points = "#{section}DataPoint".constantize.find(:all, :conditions => { "#{section_id}" => section_detail.id })
+    return section_data_points
   end
 
   def crawl_section_details_table  #{{{1
     ["ArmDetail", "BaselineCharacteristic", "DesignDetail", "OutcomeDetail", "QualityDimension"].each do |section|
       if section == "QualityDimension"  #{{{2
-        section_detail_fields = "#{section}Field".constantize.find_all_by_extraction_form_id(@ef_id)
-        section_detail_fields.each do |section_detail_field|
+        section_details = "#{section}Field".constantize.find_all_by_extraction_form_id(@ef_id)
+      else
+        section_details = "#{section}".constantize.find_all_by_extraction_form_id(@ef_id)
+      end
+      section_details.each do |section_detail|
+        temp = _crawl_section(section_detail)
+        temp[:section] = section
+        temp[:section_fields] = []# unless section_detail.field_type.downcase == "text" || section == "QualityDimension"
+        temp[:section_data_points] = []
 
-          ## Build Quality Dimension Question objects.
-          ## One of the fields is an array of Quality Dimension Data Points called :section_data_points
-          temp = _crawl_section_details_table_quality_dimension(section, section_detail_field)
-
-          ## For each Quality Dimension Question, we find any data points that may have been created
-          ## (there should be one per study) and add it to the :section_data_points array         
-          section_detail_data_points = "#{section}DataPoint".constantize.find(:all,
-                                                                              :conditions => {:"#{section.underscore}_field_id" => temp[:id],
-                                                                              :extraction_form_id => @ef_id})
-          section_detail_data_points.each do |section_detail_data_point|
-            new_data_point = _build_section_data_point(temp[:section_data_point_fields], section_detail_data_point)
-            temp[:section_data_points].push new_data_point
+        ## Find all rows in section_fields table and add it to temp
+        unless section == "QualityDimension" || section_detail.field_type.downcase == "text"
+          section_detail_fields = _find_section_field_entries(section, section_detail)
+          section_detail_fields.each do |f|
+            hash_f = _convert_ar_obj_to_hash(f)
+            temp[:section_fields].push hash_f
           end
-          @work_order.push(temp)
         end
 
-      else  #{{{2
-        section_details = "#{section}".constantize.find_all_by_extraction_form_id(@ef_id)
-        section_details.each do |section_detail|
-          ## "text" field_types are special in the sense that there is no entry for them in the section_detail_fields table.
-          #  Therefore we cannot discover the count of these sections by iterating through the number of entries in the
-          #  section_detail_fields table, but must add an entry into the work_order array immediately
-          if section_detail.field_type.downcase == "text"  #{{{3
+        ## Find all data points and add it to temp
+        section_data_points = _find_section_data_point_entries(section, section_detail)
+        section_data_points.each do |f|
+          hash_f = _convert_ar_obj_to_hash(f)
+          temp[:section_data_points].push hash_f
+        end
 
-            ## Build Question objects.
-            ## One of the fields is an array of Data Points called :section_data_points
-            temp = _crawl_section_details_table_others_text(section, section_detail)
-
-            ## For each Question object, we find any data points that may have been created
-            ## (again there should be one per study) and add it to the :section_data_points array
-            section_detail_data_points = "#{section}DataPoint".constantize.find(:all,
-                                                                                :conditions => {:"#{section.underscore}_field_id" => temp[:id],
-                                                                                :extraction_form_id => @ef_id})
-            section_detail_data_points.each do |section_detail_data_point|
-              new_data_point = _build_section_data_point(temp[:section_data_point_fields], section_detail_data_point)
-              temp[:section_data_points].push new_data_point
-            end
-            @work_order.push(temp)
-
-          else  #{{{3
-            section_detail_field_rows = "#{section}Field".constantize.find(:all, :conditions => {:"#{section.underscore}_id" => section_detail.id, :column_number => 0})
-            section_detail_field_columns = "#{section}Field".constantize.find(:all, :conditions => {:"#{section.underscore}_id" => section_detail.id, :row_number => 0})
-            section_detail_field_rows.each do |section_detail_field_row|
-              ## If it is a matrix question we need to iterate through each column also  {{{4
-              if section_detail.is_matrix
-                section_detail_field_columns.each do |section_detail_field_column|
-
-                  ## Build Question objects.
-                  ## One of the fields is an array of Data Points called :section_data_points
-                  temp = _crawl_section_details_table_others_matrix(section, section_detail, section_detail_field_row, section_detail_field_column)
-
-                  ## For each Question object, we find any data points that may have been created
-                  ## (again there should be one per study) and add it to the :section_data_points array
-                  section_detail_data_points = "#{section}DataPoint".constantize.find(:all,
-                                                                                      :conditions => {:"#{section.underscore}_field_id" => temp[:id],
-                                                                                      :extraction_form_id => @ef_id})
-                  section_detail_data_points.each do |section_detail_data_point|
-                    new_data_point = _build_section_data_point(temp[:section_data_point_fields], section_detail_data_point)
-                    temp[:section_data_points].push new_data_point
-                  end
-                  @work_order.push(temp)
-                end
-
-              ## Otherwise just iterate through the rows  {{{4
-              else
-
-                ## Build Question objects.
-                ## One of the fields is an array of Data Points called :section_data_points
-                temp = _crawl_section_details_table_others_non_matrix(section, section_detail, section_detail_field_row)
-  
-                ## For each Question object, we find any data points that may have been created
-                ## (again there should be one per study) and add it to the :section_data_points array
-                section_detail_data_points = "#{section}DataPoint".constantize.find(:all,
-                                                                                    :conditions => {:"#{section.underscore}_field_id" => temp[:id],
-                                                                                    :extraction_form_id => @ef_id})
-                section_detail_data_points.each do |section_detail_data_point|
-                  new_data_point = _build_section_data_point(temp[:section_data_point_fields], section_detail_data_point)
-                  temp[:section_data_points].push new_data_point
-                end
-                @work_order.push(temp)
-              end  #if section_detail.is_matrix
-            end  #section_detail_field_rows.each do |section_detail_field_row|
-          end  #if section_detail.field_type.downcase == "text"
-        end  #section_details.each do |section_detail|
-      end  #if section == "QualityDimension"
-    end  #["ArmDetail", "BaselineCharacteristic", "DesignDetail", "OutcomeDetail"].each do |section|
+        @work_order.push temp
+      end
+    end
   end
 
   def crawl_extraction_form_arms_table  #{{{1

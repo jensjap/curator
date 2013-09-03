@@ -3,6 +3,7 @@ require "rubyXL"
 require "./lib/environment.rb"
 require "./lib/trollop.rb"
 require "./lib/crawler.rb"
+require "./lib/waiter.rb"
 
 #workbook = RubyXL::Parser.parse("data/sample.xls")
 #p workbook.worksheets[0]
@@ -75,7 +76,7 @@ end
 if __FILE__ == $0  # {{{1
   ## Validate trollop arguments passed
   validate_arg_list(opts)
-  puts "INFO: Validated runtime arguments"
+  #puts "INFO: Validated runtime arguments"
 
   ## Constants
   PROJECT_ID = opts[:project_id]
@@ -84,14 +85,14 @@ if __FILE__ == $0  # {{{1
   ef_list = Array.new
 
   ## Load rails environment so we have access to ActiveRecord
-  puts "INFO: Loading rails environment now.."
+  #puts "INFO: Loading rails environment now.."
   load_rails_environment
-  puts "INFO: Finished loading rails environment"
+  #puts "INFO: Finished loading rails environment"
 
   ## Gather project information
-  puts "INFO: Gathering information for project with ID: #{PROJECT_ID}"
+  #puts "INFO: Gathering information for project with ID: #{PROJECT_ID}"
   project_info = get_project_info(PROJECT_ID)
-  puts "INFO: Successfully gathered information on project ID: #{PROJECT_ID}"
+  #puts "INFO: Successfully gathered information on project ID: #{PROJECT_ID}"
 
   ## Put together a list of extraction forms associated with this project
   ef_id_list = get_extraction_forms(PROJECT_ID)
@@ -101,21 +102,12 @@ if __FILE__ == $0  # {{{1
   end
 
   ## For each extraction form in ef_list instantiate a Crawler object
-  ef_id_list.each do |ef|
-    c = Crawler.new(PROJECT_ID, ef)
+  ef_id_list.each do |ef_id|
+    c = Crawler.new(PROJECT_ID, ef_id)
     ef_list.push(c)
   end
 
-  #p ef_list
-  #p ef_list[0].class
-  #p ef_list[0].methods
-  #p ef_list[0].work_order.class
-  ef_list[0].work_order.each do |order|
-    puts "NEW ORDER"
-    for key in order.keys
-      puts "work_order[#{key.inspect}] = #{order[key].inspect}"
-    end
-    puts "++++++++++++++++++++++++++++++++++++++++++++++++++++"
-  end
-  puts "Found #{ef_list.length} extraction form(s) for project #{PROJECT_ID}."
+  f = Waiter.new(project_info, ef_list)
+  #f.print
+  f.to_html5
 end
